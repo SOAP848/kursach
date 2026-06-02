@@ -1,0 +1,21 @@
+# Конфигурация bandit для Parametric Scatter Add-on
+# SAST-анализ безопасности Python-кода
+
+# Директории для исключения из анализа
+exclude_dirs:
+  - tests
+  - .dist
+  - .pytest_cache
+  - __pycache__
+
+# Уровень серьёзности: low, medium, high
+severity: medium
+
+# Уровень уверенности: low, medium, high
+confidence: medium
+
+# Пропускаемые тесты (с обоснованием)
+skips:
+  - B101  # assert — допустимо в тестах и production (используется для инвариантов)
+  - B311  # random — используется осознанно для генерации точек рассеивания
+  - B324  # hashlib_insecure_functions — не используется в проекте
