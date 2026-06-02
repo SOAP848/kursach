@@ -1,0 +1,17 @@
+schema_version = "1.0.0"
+id = "parametric_scatter"
+name = "Parametric Scatter"
+tagline = "Параметрическое размещение объектов по поверхности с управлением через текстурные карты"
+version = "1.0.0"
+type = "add-on"
+description = "Модуль параметрического размещения геометрических объектов в Blender (аналог Corona Scatter). Управление плотностью, масштабом и поворотом на основе карт текстур."
+author = "Student"
+maintainer = "Student"
+license = ["MIT"]
+tags = ["scatter", "parametric", "distribution", "3d-modeling"]
+
+blender_version_min = "4.2.0"
+
+[[dependencies]]
+name = "numpy"
+version = ">=1.24.0"
