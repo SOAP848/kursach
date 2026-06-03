@@ -4,9 +4,9 @@ name = "Parametric Scatter"
 tagline = "Параметрическое размещение объектов по поверхности с управлением через текстурные карты"
 version = "1.0.0"
 type = "add-on"
-description = "Модуль параметрического размещения геометрических объектов в Blender (аналог Corona Scatter). Управление плотностью, масштабом и поворотом на основе карт текстур."
-author = "Student"
-maintainer = "Student"
+description = "Модуль параметрического размещения геометрических объектов в Blender."
+author = "SOAP848"
+maintainer = "SOAP848"
 license = ["MIT"]
 tags = ["scatter", "parametric", "distribution", "3d-modeling"]
 
