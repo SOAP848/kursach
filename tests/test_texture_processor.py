@@ -1,14 +1,3 @@
-"""
-test_texture_processor.py — Unit-тесты для модуля texture_processor
-====================================================================
-Тестирует:
-  - load_texture_data()
-  - sample_texture() с разными каналами и режимами интерполяции
-  - _extract_channel()
-  - get_texture_resolution()
-  - generate_preview_texture()
-"""
-
 from __future__ import annotations
 
 import numpy as np

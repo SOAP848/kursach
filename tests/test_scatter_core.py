@@ -1,16 +1,3 @@
-"""
-test_scatter_core.py — Unit-тесты для модуля scatter_core
-============================================================
-Тестирует:
-  - get_mesh_data()
-  - generate_points() с разными параметрами
-  - _sample_triangle()
-  - _poisson_disc_filter()
-  - compute_transforms()
-  - create_scatter_objects()
-  - run_scatter()
-"""
-
 from __future__ import annotations
 
 import math

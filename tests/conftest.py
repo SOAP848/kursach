@@ -1,13 +1,3 @@
-"""
-conftest.py — Pytest-фикстуры и моки для тестирования
-=======================================================
-Мокирует Blender API (bpy, mathutils) на уровне модуля,
-чтобы тесты можно было запускать вне Blender.
-
-ВАЖНО: Моки устанавливаются ДО импорта parametric_scatter,
-чтобы перехватить import bpy внутри пакета.
-"""
-
 from __future__ import annotations
 
 from unittest.mock import MagicMock

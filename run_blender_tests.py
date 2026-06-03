@@ -1,9 +1,3 @@
-"""Скрипт для запуска интеграционных тестов внутри Blender.
-
-Использование в PowerShell:
-  & "C:\Program Files\Blender Foundation\Blender 5.1\blender.exe" --background --python run_blender_tests.py
-"""
-
 import sys
 import os
 import unittest
