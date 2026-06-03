@@ -1,3 +1,4 @@
+-i https://pkgs.safetycli.com/repository/student-66341/project/46/pypi/simple/
 pytest>=7.0
 pytest-cov>=4.0
 flake8>=6.0
