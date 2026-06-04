@@ -115,6 +115,7 @@ parametric_scatter/
 ├── texture_processor.py     # Загрузка и сэмплирование текстур
 ├── operators.py             # Операторы Scatter / Clear
 ├── ui_panel.py              # UI-панель в 3D Viewport
+├── setup.py                 # Установка пакета (pip install -e .)
 ├── README.md                # Данный файл
 ├── docs/
 │   ├── architecture.md      # Архитектура и диаграммы (Mermaid)
@@ -126,8 +127,13 @@ parametric_scatter/
 │   ├── test_scatter_core.py       # 22 теста
 │   └── test_integration.py        # Интеграционные тесты
 ├── .bandit                  # Конфигурация SAST-анализатора
+├── .dockerignore            # Исключения для контекста сборки Docker
 ├── requirements-dev.txt     # Зависимости для разработки
-└── Makefile                 # Цели: test, lint, security, docs
+├── requirements.txt         # Базовые зависимости
+├── Makefile                 # Цели: test, lint, security, docs, docker-*
+├── Dockerfile               # Мультистадийный Docker-образ
+├── docker-compose.yml       # Docker Compose: test, bandit, lint, all
+└── docker-entrypoint.sh     # Точка входа для Docker (выбор режима)
 ```
 
 ### Поток данных
@@ -289,15 +295,97 @@ py -m safety check -r requirements-dev.txt
 > **Примечание:** Safety 3.x требует API-ключ и подключение к интернету.
 > При отсутствии доступа к PyUp API используйте bandit для SAST-анализа.
 
+### Docker
+
+Проект поддерживает запуск тестов, SAST-анализа и линтинга через Docker.
+Это обеспечивает изолированное окружение без необходимости установки
+зависимостей на хост-машину.
+
+#### Требования
+
+- Docker Engine 24+
+- Docker Compose v2
+
+#### Сборка образов
+
+```bash
+# Сборка всех образов
+docker compose build
+
+# Форсированная пересборка (без кэша)
+docker compose build --no-cache
+```
+
+#### Запуск проверок
+
+```bash
+# Модульные тесты (pytest)
+docker compose run --rm test
+
+# SAST-анализ (bandit)
+docker compose run --rm bandit
+
+# Линтинг (flake8)
+docker compose run --rm lint
+
+# Все проверки сразу
+docker compose run --rm all
+```
+
+#### Makefile цели для Docker
+
+```bash
+make docker-build    # Сборка Docker-образов
+make docker-test     # Запуск тестов в Docker
+make docker-bandit   # Запуск bandit в Docker
+make docker-lint     # Запуск flake8 в Docker
+make docker-all      # Все проверки в Docker
+make docker-clean    # Очистка Docker-образов
+```
+
+#### Структура Docker-образов
+
+| Образ | Назначение |
+|-------|------------|
+| `parametric-scatter:test` | Запуск pytest (47 модульных тестов) |
+| `parametric-scatter:bandit` | SAST-анализ bandit |
+| `parametric-scatter:lint` | Линтинг flake8 |
+| `parametric-scatter:latest` | Точка входа с выбором режима (`test`, `bandit`, `lint`, `all`) |
+
+#### Пример вывода
+
+```bash
+$ docker compose run --rm test
+# 47 passed, 10 skipped in 6.21s
+
+$ docker compose run --rm bandit
+# No issues identified. (1011 lines scanned)
+
+$ docker compose run --rm all
+# Шаг 1/3: pytest — 47 passed, 10 skipped
+# Шаг 2/3: bandit — No issues identified
+# Шаг 3/3: flake8 — 0 errors
+```
+
 ### Makefile цели
 
 ```bash
-make test       # Запуск всех тестов
-make lint       # Статический анализ кода (flake8)
-make security   # SAST-анализ (bandit)
-make docs       # Просмотр документации
-make clean      # Очистка кэша Python
-make install-deps  # Установка зависимостей для разработки
+# Локальные
+make test           # Запуск всех тестов
+make test-verbose   # Запуск тестов с подробным выводом
+make lint           # Статический анализ кода (flake8)
+make security       # SAST-анализ (bandit)
+make docs           # Просмотр документации
+make clean          # Очистка кэша Python
+make install-deps   # Установка зависимостей для разработки
+
+# Docker
+make docker-build   # Сборка Docker-образов
+make docker-test    # Запуск тестов в Docker
+make docker-bandit  # Запуск bandit в Docker
+make docker-lint    # Запуск flake8 в Docker
+make docker-all     # Все проверки в Docker
+make docker-clean   # Очистка Docker-образов
 ```
 
 ---
@@ -339,6 +427,11 @@ make install-deps  # Установка зависимостей для разр
 | `tests/test_scatter_core.py` | 22 | ✅ Все проходят | Модульные тесты ядра рассеивания |
 | `tests/test_integration.py` | 10 | ✅ Все проходят | Интеграционные тесты (запуск в Blender) |
 | **Всего** | **57** | **57 passed** | |
+
+Запуск тестов возможен:
+- **Локально:** `py -m pytest tests/ -v` или `make test`
+- **В Docker:** `docker compose run --rm test` или `make docker-test`
+- **В Blender:** `run_blender_tests.py` (интеграционные)
 
 ---
 

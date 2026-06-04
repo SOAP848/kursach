@@ -1,12 +1,13 @@
 # Makefile для Parametric Scatter Add-on
 # Использование: make <target>
 
-.PHONY: test test-verbose lint security docs clean install-deps help
+.PHONY: test test-verbose lint security docs clean install-deps help \
+        docker-build docker-test docker-bandit docker-lint docker-all docker-clean
 
 help:
 	@echo "Parametric Scatter Add-on - Makefile"
 	@echo ""
-	@echo "Цели:"
+	@echo "Цели (локальные):"
 	@echo "  test          Запустить все unit-тесты (pytest)"
 	@echo "  test-verbose  Запустить тесты с подробным выводом"
 	@echo "  lint          Запустить flake8 линтинг"
@@ -15,6 +16,16 @@ help:
 	@echo "  clean         Очистить кэш Python"
 	@echo "  install-deps  Установить зависимости для разработки"
 	@echo ""
+	@echo "Цели (Docker):"
+	@echo "  docker-build    Собрать Docker-образ"
+	@echo "  docker-test     Запустить тесты в Docker"
+	@echo "  docker-bandit   Запустить bandit в Docker"
+	@echo "  docker-lint     Запустить flake8 в Docker"
+	@echo "  docker-all      Запустить все проверки в Docker"
+	@echo "  docker-clean    Очистить Docker-образы"
+	@echo ""
+
+# --- Локальные цели ---
 
 test:
 	py -m pytest tests/ -v --tb=short
@@ -42,3 +53,25 @@ clean:
 
 install-deps:
 	py -m pip install -r requirements-dev.txt
+
+# --- Docker цели ---
+
+docker-build:
+	docker compose build
+
+docker-test:
+	docker compose run --rm test
+
+docker-bandit:
+	docker compose run --rm bandit
+
+docker-lint:
+	docker compose run --rm lint
+
+docker-all:
+	docker compose run --rm all
+
+docker-clean:
+	@echo "Очистка Docker-образов..."
+	docker rmi parametric-scatter:latest parametric-scatter:test parametric-scatter:bandit parametric-scatter:lint 2>/dev/null || true
+	@echo "Готово."

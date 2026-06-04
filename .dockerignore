@@ -1,0 +1,47 @@
+# =============================================================================
+# .dockerignore — исключения из контекста сборки Docker
+# =============================================================================
+
+# Git
+.git
+.gitignore
+.gitattributes
+
+# Python cache
+__pycache__/
+*.py[cod]
+*.pyo
+*.egg-info/
+.pytest_cache/
+
+# Virtual environment
+venv/
+.env
+
+# IDE
+.idea/
+.vscode/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Documentation source (не нужна в контейнере)
+docs/
+README.md
+Пояснительная_записка.docx
+
+# CI/CD
+.github/
+
+# Build artifacts
+dist/
+*.egg
+
+# Docker files (чтобы избежать лишних копий)
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# Safety config (содержит токены)
+.safety-project.ini
