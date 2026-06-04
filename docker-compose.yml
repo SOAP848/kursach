@@ -1,0 +1,68 @@
+# =============================================================================
+# docker-compose.yml для Parametric Scatter Add-on
+# =============================================================================
+# Использование:
+#   docker compose run --rm test          # запуск тестов
+#   docker compose run --rm bandit        # запуск bandit
+#   docker compose run --rm lint          # запуск flake8
+#   docker compose run --rm all           # все проверки сразу
+#   docker compose up                    # запуск тестов (сервис по умолчанию)
+# =============================================================================
+
+services:
+  # --- Базовый сервис (общая конфигурация) ---
+  base:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: parametric-scatter:latest
+    volumes:
+      # Монтируем исходный код для hot-reload без пересборки
+      - .:/app
+    working_dir: /app
+    profiles:
+      - donotstart  # не запускается напрямую, только как шаблон
+
+  # --- Сервис: тесты ---
+  test:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: test-stage
+    image: parametric-scatter:test
+    container_name: parametric-scatter-test
+    working_dir: /app
+    command: ["pytest", "tests/", "-v", "--tb=short"]
+
+  # --- Сервис: bandit (SAST-анализ) ---
+  bandit:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: bandit-stage
+    image: parametric-scatter:bandit
+    container_name: parametric-scatter-bandit
+    working_dir: /app
+    command: ["bandit", "-r", ".", "-c", ".bandit"]
+
+  # --- Сервис: lint (flake8) ---
+  lint:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: lint-stage
+    image: parametric-scatter:lint
+    container_name: parametric-scatter-lint
+    working_dir: /app
+    command: ["flake8", ".", "--count", "--select=E9,F63,F7,F82", "--show-source", "--statistics", "--ignore=F722,F821"]
+
+  # --- Сервис: все проверки сразу ---
+  all:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: parametric-scatter:latest
+    container_name: parametric-scatter-all
+    working_dir: /app
+    entrypoint: ["docker-entrypoint.sh"]
+    command: ["all"]
